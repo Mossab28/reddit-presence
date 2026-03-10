@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reddit Presence Manager</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0e1117; color: #c9d1d9; display: flex; min-height: 100vh; }
+
+        /* Sidebar */
+        .sidebar { width: 220px; background: #161b22; padding: 20px 0; border-right: 1px solid #30363d; position: fixed; height: 100vh; }
+        .sidebar h1 { font-size: 16px; padding: 0 20px 20px; color: #58a6ff; border-bottom: 1px solid #30363d; }
+        .sidebar nav a { display: block; padding: 10px 20px; color: #8b949e; text-decoration: none; font-size: 14px; }
+        .sidebar nav a:hover, .sidebar nav a.active { color: #c9d1d9; background: #1f2937; }
+
+        /* Main */
+        .main { margin-left: 220px; flex: 1; padding: 30px; width: calc(100% - 220px); }
+        h2 { font-size: 22px; margin-bottom: 20px; color: #e6edf3; }
+
+        /* Cards */
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 30px; }
+        .card { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 20px; }
+        .card .label { font-size: 12px; color: #8b949e; text-transform: uppercase; }
+        .card .value { font-size: 28px; font-weight: 700; color: #e6edf3; margin-top: 4px; }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; background: #161b22; border: 1px solid #30363d; border-radius: 8px; overflow: hidden; }
+        th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid #30363d; font-size: 14px; }
+        th { background: #1c2128; color: #8b949e; font-weight: 600; font-size: 12px; text-transform: uppercase; }
+        tr:hover { background: #1c2128; }
+
+        /* Forms */
+        input[type="text"], textarea { background: #0d1117; border: 1px solid #30363d; color: #c9d1d9; padding: 8px 12px; border-radius: 6px; font-size: 14px; }
+        input[type="text"]:focus, textarea:focus { outline: none; border-color: #58a6ff; }
+        textarea { width: 100%; min-height: 150px; font-family: inherit; resize: vertical; }
+
+        /* Buttons */
+        .btn { display: inline-block; padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; border: 1px solid #30363d; text-decoration: none; }
+        .btn-primary { background: #238636; color: #fff; border-color: #238636; }
+        .btn-primary:hover { background: #2ea043; }
+        .btn-danger { background: #da3633; color: #fff; border-color: #da3633; }
+        .btn-danger:hover { background: #f85149; }
+        .btn-secondary { background: #21262d; color: #c9d1d9; }
+        .btn-secondary:hover { background: #30363d; }
+        .btn-blue { background: #1f6feb; color: #fff; border-color: #1f6feb; }
+        .btn-blue:hover { background: #388bfd; }
+
+        /* Badges */
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+        .badge-new { background: #1f6feb33; color: #58a6ff; }
+        .badge-draft { background: #e3b34133; color: #e3b341; }
+        .badge-scheduled { background: #23863633; color: #3fb950; }
+        .badge-sent { background: #23863666; color: #56d364; }
+        .badge-skipped { background: #8b949e33; color: #8b949e; }
+        .badge-failed { background: #da363333; color: #f85149; }
+
+        /* Inline form */
+        .inline-form { display: flex; gap: 8px; margin-bottom: 20px; align-items: center; }
+        .inline-form input[type="text"] { flex: 1; }
+
+        /* Log */
+        .log-entry { padding: 6px 0; border-bottom: 1px solid #21262d; font-size: 13px; }
+        .log-entry .time { color: #8b949e; font-size: 11px; }
+
+        /* Filters */
+        .filters { display: flex; gap: 8px; margin-bottom: 16px; }
+        .filters a { padding: 4px 12px; border-radius: 16px; font-size: 13px; text-decoration: none; color: #8b949e; border: 1px solid #30363d; }
+        .filters a.active { background: #1f6feb33; color: #58a6ff; border-color: #1f6feb; }
+
+        .mt-2 { margin-top: 16px; }
+        .mb-2 { margin-bottom: 16px; }
+        .text-muted { color: #8b949e; font-size: 13px; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h1>Reddit Presence</h1>
+        <nav>
+            <a href="/" class="{{ 'active' if request.endpoint == 'dashboard' }}">Dashboard</a>
+            <a href="/posts" class="{{ 'active' if request.endpoint == 'posts_page' }}">Posts</a>
+            <a href="/drafts" class="{{ 'active' if request.endpoint in ('drafts_page', 'draft_page') }}">Drafts</a>
+            <a href="/subreddits" class="{{ 'active' if request.endpoint == 'subreddits_page' }}">Subreddits</a>
+            <a href="/keywords" class="{{ 'active' if request.endpoint == 'keywords_page' }}">Keywords</a>
+        </nav>
+    </div>
+    <div class="main">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

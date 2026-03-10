@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Keywords</h2>
+
+<form method="POST" action="/keywords/add" class="inline-form">
+    <input type="text" name="word" placeholder="Keyword (e.g. dedicated server)" required>
+    <input type="text" name="subreddit" placeholder="Subreddit (* = all)" value="*" style="width: 150px;">
+    <button type="submit" class="btn btn-primary">Add</button>
+</form>
+
+{% if keywords %}
+<table>
+    <thead><tr><th>Keyword</th><th>Scope</th><th>Actions</th></tr></thead>
+    <tbody>
+    {% for kw in keywords %}
+    <tr>
+        <td>{{ kw.word }}</td>
+        <td>{{ 'All subreddits' if kw.subreddit == '*' else 'r/' + kw.subreddit }}</td>
+        <td>
+            <form method="POST" action="/keywords/{{ kw.id }}/delete" style="display:inline;">
+                <button class="btn btn-danger" type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="text-muted">No keywords configured. Add keywords to detect relevant posts.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Edit Draft</h2>
+
+{% if post %}
+<div class="card mb-2">
+    <div class="label">Original Post</div>
+    <div class="mt-2">
+        <a href="{{ post.url }}" target="_blank" style="color: #58a6ff; font-weight: 600;">{{ post.title }}</a>
+        <span class="text-muted"> &mdash; r/{{ post.subreddit }} &mdash; Keywords: {{ post.matched_keywords }}</span>
+    </div>
+</div>
+{% endif %}
+
+<form method="POST" action="/drafts/{{ draft.id }}/edit" class="mt-2">
+    <textarea name="body">{{ draft.body }}</textarea>
+    <div class="mt-2" style="display: flex; gap: 8px;">
+        <button type="submit" class="btn btn-secondary">Save</button>
+        {% if draft.status == 'draft' %}
+        <a href="#" onclick="this.closest('div').querySelector('.schedule-form').submit(); return false;" class="btn btn-primary">Save & Schedule</a>
+        {% endif %}
+        <a href="/drafts" class="btn btn-secondary">Back</a>
+    </div>
+</form>
+
+{% if draft.status == 'draft' %}
+<form method="POST" action="/drafts/{{ draft.id }}/schedule" class="schedule-form" style="display:none;"></form>
+{% endif %}
+
+<div class="mt-2 text-muted">
+    Status: <span class="badge badge-{{ draft.status }}">{{ draft.status }}</span>
+    {% if draft.scheduled_at %} | Scheduled: {{ draft.scheduled_at.strftime('%d/%m/%Y %H:%M') }}{% endif %}
+    {% if draft.sent_at %} | Sent: {{ draft.sent_at.strftime('%d/%m/%Y %H:%M') }}{% endif %}
+</div>
+{% endblock %}

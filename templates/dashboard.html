@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Dashboard</h2>
+
+<div class="cards">
+    <div class="card">
+        <div class="label">New Posts</div>
+        <div class="value">{{ posts_new }}</div>
+    </div>
+    <div class="card">
+        <div class="label">Total Posts Tracked</div>
+        <div class="value">{{ posts_total }}</div>
+    </div>
+    <div class="card">
+        <div class="label">Replies Sent</div>
+        <div class="value">{{ replies_sent }}</div>
+    </div>
+    <div class="card">
+        <div class="label">Scheduled</div>
+        <div class="value">{{ replies_scheduled }}</div>
+    </div>
+    {% if latest_metric %}
+    <div class="card">
+        <div class="label">Comment Karma</div>
+        <div class="value">{{ latest_metric.karma_comment }}</div>
+    </div>
+    <div class="card">
+        <div class="label">Link Karma</div>
+        <div class="value">{{ latest_metric.karma_link }}</div>
+    </div>
+    {% endif %}
+</div>
+
+<div style="display: flex; gap: 8px; margin-bottom: 20px;">
+    <form method="POST" action="/actions/scan"><button class="btn btn-primary" type="submit">Scan Now</button></form>
+    <form method="POST" action="/actions/metrics"><button class="btn btn-secondary" type="submit">Update Metrics</button></form>
+</div>
+
+<h2>Recent Activity</h2>
+{% if recent_logs %}
+<table>
+    <thead><tr><th>Time</th><th>Action</th><th>Detail</th></tr></thead>
+    <tbody>
+    {% for log in recent_logs %}
+    <tr>
+        <td class="text-muted">{{ log.timestamp.strftime('%d/%m %H:%M') }}</td>
+        <td><span class="badge badge-{{ 'sent' if log.action == 'reply' else ('failed' if log.action == 'error' else 'new') }}">{{ log.action }}</span></td>
+        <td>{{ log.detail[:120] }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="text-muted">No activity yet. Add subreddits and keywords, then run a scan.</p>
+{% endif %}
+{% endblock %}

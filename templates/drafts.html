@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Draft Replies</h2>
+
+{% if drafts %}
+<table>
+    <thead><tr><th>Post</th><th>Status</th><th>Scheduled</th><th>Actions</th></tr></thead>
+    <tbody>
+    {% for draft in drafts %}
+    <tr>
+        <td>
+            {% if posts_map.get(draft.post) %}
+            <a href="{{ posts_map[draft.post].url }}" target="_blank" style="color: #58a6ff;">{{ posts_map[draft.post].title[:60] }}</a>
+            {% else %}
+            {{ draft.post }}
+            {% endif %}
+        </td>
+        <td><span class="badge badge-{{ draft.status }}">{{ draft.status }}</span></td>
+        <td class="text-muted">{{ draft.scheduled_at.strftime('%d/%m %H:%M') if draft.scheduled_at else '-' }}</td>
+        <td>
+            <a href="/drafts/{{ draft.id }}" class="btn btn-secondary">View</a>
+            {% if draft.status == 'draft' %}
+            <form method="POST" action="/drafts/{{ draft.id }}/schedule" style="display:inline;">
+                <button class="btn btn-primary" type="submit">Schedule</button>
+            </form>
+            {% endif %}
+            <form method="POST" action="/drafts/{{ draft.id }}/delete" style="display:inline;">
+                <button class="btn btn-danger" type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="text-muted">No drafts yet. Generate replies from tracked posts.</p>
+{% endif %}
+{% endblock %}
